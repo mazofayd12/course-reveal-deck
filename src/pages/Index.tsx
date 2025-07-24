@@ -1,14 +1,7 @@
-import { useState } from 'react';
 import { CourseCard } from '@/components/CourseCard';
 import { courses } from '@/data/courses';
 
 const Index = () => {
-  const [expandedCourse, setExpandedCourse] = useState<string | null>(null);
-
-  const handleToggle = (courseId: string) => {
-    setExpandedCourse(expandedCourse === courseId ? null : courseId);
-  };
-
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
@@ -44,23 +37,10 @@ const Index = () => {
               className="animate-fade-in"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <CourseCard
-                course={course}
-                isExpanded={expandedCourse === course.id}
-                onToggle={handleToggle}
-              />
+              <CourseCard course={course} />
             </div>
           ))}
         </div>
-
-        {/* Expanded Course Display */}
-        {expandedCourse && (
-          <div className="mt-8 animate-scale-in">
-            <div className="max-w-5xl mx-auto">
-              {/* Full-width expanded content is handled within CourseCard component */}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
