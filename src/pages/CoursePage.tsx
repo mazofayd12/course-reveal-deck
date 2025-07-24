@@ -1,12 +1,15 @@
+import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Play, Clock, Users, Star } from 'lucide-react';
+import { ArrowLeft, Play, Clock, Users, Star, ChevronDown, CheckCircle, Lock } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 import { courses } from '@/data/courses';
 
 const CoursePage = () => {
   const { courseId } = useParams<{ courseId: string }>();
+  const [expandedLesson, setExpandedLesson] = useState<number | null>(1);
   const course = courses.find(c => c.id === courseId);
 
   if (!course) {
@@ -29,7 +32,19 @@ const CoursePage = () => {
       description: course.firstEpisode.description,
       duration: '15 دقيقة',
       isCompleted: false,
-      isFree: true
+      isFree: true,
+      detailedContent: [
+        'مقدمة شاملة عن أساسيات التطوير',
+        'شرح بيئة العمل والأدوات المطلوبة',
+        'إنشاء أول مشروع عملي',
+        'فهم البنية الأساسية للكود',
+        'تطبيق عملي مع أمثلة واقعية'
+      ],
+      objectives: [
+        'فهم المفاهيم الأساسية',
+        'إعداد بيئة التطوير',
+        'بناء أول تطبيق بسيط'
+      ]
     },
     {
       id: 2,
@@ -37,7 +52,19 @@ const CoursePage = () => {
       description: 'تعلم كيفية التعامل مع المتغيرات والدوال الأساسية في هذا الكورس',
       duration: '20 دقيقة',
       isCompleted: false,
-      isFree: true
+      isFree: true,
+      detailedContent: [
+        'شرح مفصل للمتغيرات وأنواعها',
+        'كيفية إنشاء واستخدام الدوال',
+        'أفضل الممارسات في كتابة الكود',
+        'أمثلة عملية ومشاريع تطبيقية',
+        'حل المشاكل الشائعة'
+      ],
+      objectives: [
+        'إتقان استخدام المتغيرات',
+        'فهم طريقة عمل الدوال',
+        'تطبيق المعرفة عملياً'
+      ]
     },
     {
       id: 3,
@@ -45,7 +72,19 @@ const CoursePage = () => {
       description: 'ابدأ في بناء مشروعك الأول وتطبيق ما تعلمته من المفاهيم الأساسية',
       duration: '25 دقيقة',
       isCompleted: false,
-      isFree: false
+      isFree: false,
+      detailedContent: [
+        'تخطيط وتصميم المشروع',
+        'إنشاء هيكل المشروع الأساسي',
+        'تطبيق المفاهيم المتعلمة',
+        'إضافة الوظائف الأساسية',
+        'اختبار وتحسين الأداء'
+      ],
+      objectives: [
+        'بناء مشروع متكامل',
+        'تطبيق أفضل الممارسات',
+        'فهم سير العمل الاحترافي'
+      ]
     },
     {
       id: 4,
@@ -53,7 +92,19 @@ const CoursePage = () => {
       description: 'تعمق في المفاهيم المتقدمة وتعلم كيفية حل المشاكل المعقدة',
       duration: '30 دقيقة',
       isCompleted: false,
-      isFree: false
+      isFree: false,
+      detailedContent: [
+        'المفاهيم المتقدمة والتقنيات الحديثة',
+        'حل المشاكل المعقدة خطوة بخطوة',
+        'تحسين الأداء والكفاءة',
+        'استخدام المكتبات والأدوات المساعدة',
+        'مشاريع عملية متقدمة'
+      ],
+      objectives: [
+        'إتقان التقنيات المتقدمة',
+        'حل المشاكل بطريقة احترافية',
+        'تطوير مهارات حل المشاكل'
+      ]
     },
     {
       id: 5,
@@ -61,9 +112,25 @@ const CoursePage = () => {
       description: 'اطبق كل ما تعلمته في مشروع شامل ومتكامل',
       duration: '45 دقيقة',
       isCompleted: false,
-      isFree: false
+      isFree: false,
+      detailedContent: [
+        'تخطيط وتصميم مشروع متكامل',
+        'تطبيق جميع المفاهيم المتعلمة',
+        'إنشاء مشروع احترافي قابل للنشر',
+        'اختبار شامل وضمان الجودة',
+        'نشر المشروع وعرضه للعالم'
+      ],
+      objectives: [
+        'إنجاز مشروع احترافي متكامل',
+        'إتقان جميع جوانب التطوير',
+        'إعداد المشروع للنشر'
+      ]
     }
   ];
+
+  const toggleLesson = (lessonId: number) => {
+    setExpandedLesson(expandedLesson === lessonId ? null : lessonId);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -132,58 +199,140 @@ const CoursePage = () => {
             </p>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-6">
             {lessons.map((lesson, index) => (
               <Card 
                 key={lesson.id}
-                className="group hover:shadow-hover transition-all duration-300 bg-gradient-card border-border/50"
+                className="group transition-all duration-300 bg-gradient-card border-border/50 overflow-hidden"
               >
-                <CardContent className="p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0">
-                      <div className={`w-10 h-10 rounded-lg ${course.color} flex items-center justify-center`}>
-                        <Play className="w-5 h-5 text-white fill-white" />
+                <CardContent className="p-0">
+                  {/* Lesson Header */}
+                  <div 
+                    className="p-6 cursor-pointer hover:bg-gradient-hover transition-all duration-300"
+                    onClick={() => toggleLesson(lesson.id)}
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0">
+                        <div className={`w-12 h-12 rounded-lg ${course.color} flex items-center justify-center relative`}>
+                          {lesson.isCompleted ? (
+                            <CheckCircle className="w-6 h-6 text-white" />
+                          ) : lesson.isFree ? (
+                            <Play className="w-6 h-6 text-white fill-white" />
+                          ) : (
+                            <Lock className="w-5 h-5 text-white" />
+                          )}
+                          <div className="absolute -top-1 -right-1 w-6 h-6 bg-background rounded-full flex items-center justify-center text-xs font-bold text-foreground">
+                            {lesson.id}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-2">
+                              <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
+                                {lesson.title}
+                              </h3>
+                              {lesson.isFree && (
+                                <Badge variant="secondary" className="text-xs">
+                                  مجاني
+                                </Badge>
+                              )}
+                            </div>
+
+                            <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+                              {lesson.description}
+                            </p>
+
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-4 text-muted-foreground text-sm">
+                                <div className="flex items-center gap-2">
+                                  <Clock className="w-4 h-4" />
+                                  <span>{lesson.duration}</span>
+                                </div>
+                                <span className="text-xs">
+                                  {lesson.detailedContent.length} موضوع
+                                </span>
+                              </div>
+
+                              <ChevronDown 
+                                className={cn(
+                                  "w-5 h-5 text-muted-foreground transition-transform duration-300",
+                                  expandedLesson === lesson.id && "rotate-180"
+                                )}
+                              />
+                            </div>
+                          </div>
+
+                          <div className="flex-shrink-0">
+                            <Button 
+                              variant={index === 0 ? "default" : lesson.isFree ? "secondary" : "outline"}
+                              size="sm"
+                              className={cn(
+                                "transition-all duration-300",
+                                index === 0 && "bg-primary hover:bg-primary/90 shadow-elegant hover:shadow-hover"
+                              )}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                // Handle watch/start action
+                              }}
+                            >
+                              {index === 0 ? (
+                                <>
+                                  <Play className="w-4 h-4 mr-2 fill-current" />
+                                  ابدأ الآن
+                                </>
+                              ) : lesson.isFree ? (
+                                'مشاهدة مجانية'
+                              ) : (
+                                'مطلوب اشتراك'
+                              )}
+                            </Button>
+                          </div>
+                        </div>
                       </div>
                     </div>
+                  </div>
 
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
-                          {lesson.title}
-                        </h3>
-                        {lesson.isFree && (
-                          <Badge variant="secondary" className="text-xs">
-                            مجاني
-                          </Badge>
-                        )}
-                      </div>
-
-                      <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-                        {lesson.description}
-                      </p>
-
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-muted-foreground text-sm">
-                          <Clock className="w-4 h-4" />
-                          <span>{lesson.duration}</span>
+                  {/* Expanded Content */}
+                  <div className={cn(
+                    "overflow-hidden transition-all duration-500 ease-out",
+                    expandedLesson === lesson.id ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                  )}>
+                    <div className="px-6 pb-6 border-t border-border/30">
+                      <div className="pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* What You'll Learn */}
+                        <div>
+                          <h4 className="text-base font-semibold text-foreground mb-3 flex items-center gap-2">
+                            <div className={`w-2 h-2 rounded-full ${course.color}`} />
+                            ما ستتعلمه في هذه الحلقة
+                          </h4>
+                          <ul className="space-y-2">
+                            {lesson.detailedContent.map((item, idx) => (
+                              <li key={idx} className="text-sm text-muted-foreground flex items-start gap-2">
+                                <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+                                {item}
+                              </li>
+                            ))}
+                          </ul>
                         </div>
 
-                        <Button 
-                          variant={index === 0 ? "default" : "outline"}
-                          size="sm"
-                          className={index === 0 ? "bg-primary hover:bg-primary/90 shadow-elegant" : ""}
-                        >
-                          {index === 0 ? (
-                            <>
-                              <Play className="w-4 h-4 mr-2 fill-current" />
-                              ابدأ الآن
-                            </>
-                          ) : lesson.isFree ? (
-                            'مشاهدة مجانية'
-                          ) : (
-                            'مطلوب اشتراك'
-                          )}
-                        </Button>
+                        {/* Learning Objectives */}
+                        <div>
+                          <h4 className="text-base font-semibold text-foreground mb-3 flex items-center gap-2">
+                            <div className={`w-2 h-2 rounded-full ${course.color}`} />
+                            أهداف التعلم
+                          </h4>
+                          <ul className="space-y-2">
+                            {lesson.objectives.map((objective, idx) => (
+                              <li key={idx} className="text-sm text-muted-foreground flex items-start gap-2">
+                                <CheckCircle className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                                {objective}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
                       </div>
                     </div>
                   </div>
